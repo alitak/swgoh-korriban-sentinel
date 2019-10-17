@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Snapshot extends Model
+class SnapshotCharacter extends Model
 {
     /*
      |--------------------------------------------------------------------------
@@ -12,23 +12,25 @@ class Snapshot extends Model
      |--------------------------------------------------------------------------
     */
 
-    protected $table = 'snapshots';
+    protected $table = 'snapshot_caracters';
     protected $primaryKey = 'id';
     public $timestamps = TRUE;
     protected $guarded = ['id'];
     protected $fillable = [
-        'name',
-        'base_id',
-        'image',
-        'alignment',
-        'role',
+        'snapshot_id',
+        'character_id',
+        'power',
+        'rarity	',
+        'gear_level',
+        'relic_tier',
     ];
     // protected $hidden = [];
     protected $dates = [
         'created_at',
         'updated_at',
     ];
-    protected $casts = [];
+    protected $casts = [
+    ];
 
     // protected $hidden = [];
     // protected $dates = [];
@@ -56,10 +58,6 @@ class Snapshot extends Model
       | ACCESORS
       |--------------------------------------------------------------------------
      */
-    public function getCreatedAtAttribute($value)
-    {
-        return \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value)->format('Y-m-d');
-    }
 
     /*
       |--------------------------------------------------------------------------

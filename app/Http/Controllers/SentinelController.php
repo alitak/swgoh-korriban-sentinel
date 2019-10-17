@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Discord\DiscordCommandClient;
 use Illuminate\Support\Facades\URL;
+use SebastianBergmann\CodeCoverage\Report\PHP;
 
 class SentinelController extends Controller
 {
@@ -97,12 +98,33 @@ class SentinelController extends Controller
             return;
         }
 
+        // get user data
+        $user_data = json_decode(url_get_contents(config('swgoh.api.base') . config('swgoh.api.player') . $player->ally_code));
+
         // store snapshot
         $snapshot = new \App\Models\Snapshot();
         $snapshot->player_id = 1;
+        $snapshot->gp = $user_data->data->galactic_power;
         $snapshot->save();
 
         // store character statuses
+        $character_list = \App\Models\Character::pluck('id', 'base_id');
+        echo count($character_list) . PHP_EOL;
+        foreach ($user_data->units as $unit) {
+            if ($unit->data->combat_type == 2) {
+                // ship
+                continue;
+            }
+            $snapshot_character = new \App\Models\SnapshotCharacter();
+            $snapshot_character->snapshot_id = $snapshot->id;
+            $snapshot_character->character_id = $character_list[$unit->data->base_id];
+            $snapshot_character->power = $unit->data->power;
+            $snapshot_character->rarity = $unit->data->rarity;
+            $snapshot_character->gear_level = $unit->data->gear_level;
+            $snapshot_character->relic_tier = $unit->data->relic_tier;
+            $snapshot_character->save();
+        }
+        echo 'done' . PHP_EOL;
 
         return $this->list($message, $params);
     }

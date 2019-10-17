@@ -12,12 +12,18 @@ class TestController extends Controller
             0 => '<@528325163452858383>',
         ];
 
-
         $player = $this->getPlayerByName($params[0]);
         if (!is_object($player)) {
             return;
         }
-        return \App\Models\Snapshot::where('player_id', $player->id)->pluck('created_at', 'id')->toArray();
+
+        $snapshot = (object)[
+            'id' => 10,
+        ];
+
+        /////////////////////////////
+        dd($snapshot->id);
+
     }
 
     private function getPlayerByName($name)

@@ -17,6 +17,7 @@ class CreateSnapshotsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('player_id');
             $table->foreign('player_id')->references('id')->on('players')->onUpdate('cascade')->onDelete('cascade');
+            $table->integer('gp');
             $table->timestamps();
         });
     }
