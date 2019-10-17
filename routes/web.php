@@ -3,6 +3,6 @@
 Route::resource('/', 'SentinelController');
 
 // @todo move to command
-Route::get('/syncCharacters', 'SyncController@characters');
+Route::get('/syncUnits', 'SyncController@units');
 
 Route::get('/t', 'TestController@index');

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CategoryCharacter extends Model
+class Unit extends Model
 {
     /*
       |--------------------------------------------------------------------------
@@ -12,16 +12,23 @@ class CategoryCharacter extends Model
       |--------------------------------------------------------------------------
      */
 
-    protected $table = 'category_character_pivot';
+    protected $table = 'units';
     protected $primaryKey = 'id';
-    public $timestamps = FALSE;
+    public $timestamps = TRUE;
     protected $guarded = ['id'];
     protected $fillable = [
+        'combat_type',
         'name',
-        'category_id',
-        'character_id',
+        'base_id',
+        'image',
+        'alignment',
+        'role',
     ];
     // protected $hidden = [];
+    protected $dates = [
+        'create_at',
+        'updated_at',
+    ];
     protected $casts = [];
 
     // protected $hidden = [];
@@ -38,6 +45,11 @@ class CategoryCharacter extends Model
       | RELATIONS
       |--------------------------------------------------------------------------
      */
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class);
+//        return $this->hasManyThrough($related, $through, $firstKey, $secondKey, $localKey, $secondLocalKey);
+    }
 
     /*
       |--------------------------------------------------------------------------

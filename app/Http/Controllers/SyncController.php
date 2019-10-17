@@ -12,28 +12,34 @@ class SyncController extends Controller
 
     private $categories = [];
 
-    public function characters()
+    public function units()
     {
-        $characters = json_decode(url_get_contents(config('swgoh.api.base') . config('swgoh.api.characters')));
-//        $characters = json_decode(\Storage::get('characters.json'));
-        foreach ($characters as $character) {
+        $this->storeUnits(json_decode(url_get_contents(config('swgoh.api.base') . config('swgoh.api.characters'))));
+        $this->storeUnits(json_decode(url_get_contents(config('swgoh.api.base') . config('swgoh.api.ships'))));
+    }
 
-            $char = \App\Models\Character::updateOrCreate(['base_id' => $character->base_id], [
-                    'name' => $character->name,
-                    'base_id' => $character->base_id,
-                    'image' => $character->image,
-                    'alignment' => $character->alignment,
-                    'role' => $character->role,
+    private function storeUnits($unit_list)
+    {
+        foreach ($unit_list as $unit) {
+            $local_unit = \App\Models\Unit::updateOrCreate([
+                'base_id' => $unit->base_id,
+            ], [
+                'combat_type' => $unit->combat_type,
+                'name' => $unit->name,
+                'image' => $unit->image,
+                'alignment' => $unit->alignment,
+                'role' => $unit->role,
             ]);
-            \App\Models\CategoryCharacter::where('character_id', $char->id)->delete();
+            \App\Models\CategoryUnit::where('unit_id', $local_unit->id)->delete();
 
-            foreach ($character->categories as $category) {
-                \App\Models\CategoryCharacter::create([
-                    'character_id' => $char->id,
+            foreach ($unit->categories as $category) {
+                \App\Models\CategoryUnit::create([
+                    'unit_id' => $local_unit->id,
                     'category_id' => $this->getCategoryIdByName($category),
                 ]);
             }
         }
+
     }
 
     private function getCategoryIdByName($category)

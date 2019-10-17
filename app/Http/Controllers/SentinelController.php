@@ -103,26 +103,23 @@ class SentinelController extends Controller
 
         // store snapshot
         $snapshot = new \App\Models\Snapshot();
-        $snapshot->player_id = 1;
+        $snapshot->player_id = $player->id;
         $snapshot->gp = $user_data->data->galactic_power;
         $snapshot->save();
+        echo 'snapshot: ' . $snapshot->id;
 
-        // store character statuses
-        $character_list = \App\Models\Character::pluck('id', 'base_id');
-        echo count($character_list) . PHP_EOL;
+        // store unit statuses
+        $unit_list = \App\Models\Unit::pluck('id', 'base_id');
         foreach ($user_data->units as $unit) {
-            if ($unit->data->combat_type == 2) {
-                // ship
-                continue;
-            }
-            $snapshot_character = new \App\Models\SnapshotCharacter();
-            $snapshot_character->snapshot_id = $snapshot->id;
-            $snapshot_character->character_id = $character_list[$unit->data->base_id];
-            $snapshot_character->power = $unit->data->power;
-            $snapshot_character->rarity = $unit->data->rarity;
-            $snapshot_character->gear_level = $unit->data->gear_level;
-            $snapshot_character->relic_tier = $unit->data->relic_tier;
-            $snapshot_character->save();
+            $snapshot_unit = new \App\Models\SnapshotUnit();
+            $snapshot_unit->snapshot_id = $snapshot->id;
+            $snapshot_unit->unit_id = $unit_list[$unit->data->base_id];
+            $snapshot_unit->power = $unit->data->power;
+            $snapshot_unit->rarity = $unit->data->rarity;
+            $snapshot_unit->gear_level = $unit->data->gear_level;
+            $snapshot_unit->relic_tier = $unit->data->relic_tier;
+            $snapshot_unit->speed = $unit->data->stats->{5};
+            $snapshot_unit->save();
         }
         echo 'done' . PHP_EOL;
 

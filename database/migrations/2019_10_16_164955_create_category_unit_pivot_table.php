@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCategoryCharacterPivotTable extends Migration
+class CreateCategoryUnitPivotTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateCategoryCharacterPivotTable extends Migration
      */
     public function up()
     {
-        Schema::create('category_character_pivot', function (Blueprint $table) {
+        Schema::create('category_unit_pivot', function (Blueprint $table) {
             $table->integer('category_id')->unsigned()->index();
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
-            $table->integer('character_id')->unsigned()->index();
-            $table->foreign('character_id')->references('id')->on('characters')->onDelete('cascade');
-            $table->primary(['category_id', 'character_id']);
+            $table->integer('unit_id')->unsigned()->index();
+            $table->foreign('unit_id')->references('id')->on('units')->onDelete('cascade');
+            $table->primary(['category_id', 'unit_id']);
         });
     }
 
@@ -29,6 +29,6 @@ class CreateCategoryCharacterPivotTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('category_character_pivot');
+        Schema::dropIfExists('category_unit_pivot');
     }
 }

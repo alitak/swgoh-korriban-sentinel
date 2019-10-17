@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSnapshotCharactersTable extends Migration
+class CreateSnapshotUnitsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,17 @@ class CreateSnapshotCharactersTable extends Migration
      */
     public function up()
     {
-        Schema::create('snapshot_caracters', function (Blueprint $table) {
+        Schema::create('snapshot_units', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('snapshot_id');
             $table->foreign('snapshot_id')->references('id')->on('snapshots')->onUpdate('cascade')->onDelete('cascade');
-            $table->unsignedInteger('character_id');
-            $table->foreign('character_id')->references('id')->on('characters')->onUpdate('cascade')->onDelete('cascade');
-            $table->smallInteger('power');
+            $table->unsignedInteger('unit_id');
+            $table->foreign('unit_id')->references('id')->on('units')->onUpdate('cascade')->onDelete('cascade');
+            $table->mediumInteger('power');
             $table->tinyInteger('rarity');
             $table->tinyInteger('gear_level');
             $table->tinyInteger('relic_tier');
+            $table->smallInteger('speed');
             $table->timestamps();
         });
     }
@@ -34,6 +35,6 @@ class CreateSnapshotCharactersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('snapshot_caracters');
+        Schema::dropIfExists('snapshot_units');
     }
 }

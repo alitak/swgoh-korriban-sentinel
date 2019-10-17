@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SnapshotCharacter extends Model
+class SnapshotUnit extends Model
 {
     /*
      |--------------------------------------------------------------------------
@@ -12,17 +12,18 @@ class SnapshotCharacter extends Model
      |--------------------------------------------------------------------------
     */
 
-    protected $table = 'snapshot_caracters';
+    protected $table = 'snapshot_units';
     protected $primaryKey = 'id';
     public $timestamps = TRUE;
     protected $guarded = ['id'];
     protected $fillable = [
         'snapshot_id',
-        'character_id',
+        'unit_id',
         'power',
         'rarity	',
         'gear_level',
         'relic_tier',
+        'speed',
     ];
     // protected $hidden = [];
     protected $dates = [

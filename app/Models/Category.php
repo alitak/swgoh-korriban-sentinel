@@ -40,9 +40,9 @@ class Category extends Model
       | RELATIONS
       |--------------------------------------------------------------------------
      */
-    public function characters()
+    public function units()
     {
-        return $this->belongsToMany(Character::class);
+        return $this->belongsToMany(Unit::class);
     }
 
     /*
