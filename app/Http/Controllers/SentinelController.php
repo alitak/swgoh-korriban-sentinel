@@ -19,7 +19,7 @@ class SentinelController extends Controller
             'token' => env('DISCORD_BOT_TOKEN'),
             'description' => 'mechwart helper bot for HUNtedHUNt3rs',
             'name' => 'KS',
-            'defaultHelpCommand' => false,
+//            'defaultHelpCommand' => false,
             'discordOptions' => [
                 'bot' => true,
 //                'avatar' => env('APP_URL') . '/images/sith-inquisitor.png',
@@ -73,7 +73,7 @@ class SentinelController extends Controller
             return 'wrong parameters, try help!';
         }
 
-        $player = \App\Player::firstOrNew([
+        $player = \App\Models\Player::firstOrNew([
             'ally_code' => $params[0],
             'name' => $params[1],
         ], []);
@@ -97,9 +97,12 @@ class SentinelController extends Controller
             return;
         }
 
+        // store snapshot
         $snapshot = new \App\Models\Snapshot();
         $snapshot->player_id = 1;
         $snapshot->save();
+
+        // store character statuses
 
         return $this->list($message, $params);
     }
