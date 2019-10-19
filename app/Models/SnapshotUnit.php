@@ -47,6 +47,10 @@ class SnapshotUnit extends Model
       | RELATIONS
       |--------------------------------------------------------------------------
      */
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
+    }
 
     /*
       |--------------------------------------------------------------------------

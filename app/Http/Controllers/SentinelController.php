@@ -141,6 +141,53 @@ class SentinelController extends Controller
 
     private function compare($message, $params)
     {
+        $player = $this->getPlayerByName($params[2]);
+        if (!is_object($player)) {
+            return;
+        }
+        $return = 'snapshot compare:' . PHP_EOL;
+        $snapshots = [
+            \App\Models\Snapshot::findOrFail($params[0]),
+            \App\Models\Snapshot::findOrFail($params[1]),
+        ];
+
+        $return .= 'Player data:' . PHP_EOL;
+        $return .= '         ' . $snapshots[1]->created_at . ' | ' . number_format($snapshots[1]->gp, 0, '.', ' ') . ' GP' . PHP_EOL;
+        $return .= '-->   ' . $snapshots[0]->created_at . ' | ' . number_format($snapshots[0]->gp, 0, '.', ' ') . ' GP' . PHP_EOL;
+
+        $return .= PHP_EOL . 'Units:' . PHP_EOL;
+        $snapshot_unit_power = \App\Models\SnapshotUnit::where('snapshot_id', $params[1])->get()->pluck('power', 'unit_id');
+        $snapshot_units = \App\Models\SnapshotUnit::where('snapshot_id', $params[0])->orderBy('power', 'desc')->get();
+
+        foreach ($snapshot_units as $snapshot_unit) {
+            if (isset($snapshot_unit_power[$snapshot_unit->unit_id]) && $snapshot_unit->power == $snapshot_unit_power[$snapshot_unit->unit_id]) {
+                continue;
+            }
+
+            $return .= $snapshot_unit->unit->name . ' ' . PHP_EOL;
+            $snapshot_unit_old = \App\Models\SnapshotUnit::where([
+                'snapshot_id' => $params[1],
+                'unit_id' => $snapshot_unit->unit_id,
+            ])->first();
+
+            if ($snapshot_unit_old) {
+                $return .= '         ' . number_format($snapshot_unit_old->power, 0, '.', ' ') . ' GP | '
+                    . $snapshot_unit_old->rarity . '* | '
+                    . ($snapshot_unit_old->relic_tier > 1 ? 'R' . $snapshot_unit_old->relic_tier : 'G' . $snapshot_unit_old->gear_level) . ' | '
+                    . 'speed ' . $snapshot_unit_old->speed;
+            }
+            $return .= PHP_EOL;
+
+            $return .= '-->   ' . number_format($snapshot_unit->power, 0, '.', ' ') . ' GP | '
+                . $snapshot_unit->rarity . '* | '
+                . ($snapshot_unit->relic_tier > 1 ? 'R' . $snapshot_unit->relic_tier : 'G' . $snapshot_unit->gear_level) . ' | '
+                . 'speed ' . $snapshot_unit->speed
+                . PHP_EOL;
+            $return .= PHP_EOL;
+        }
+
+        return $return;
+
     }
 
     private function getPlayerByName($name)
