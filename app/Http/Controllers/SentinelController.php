@@ -192,9 +192,8 @@ class SentinelController extends Controller
 
     private function getPlayerByName($name)
     {
-        try {
-            $player = \App\Models\Player::where('name', $name)->firstOrFail();
-        } catch (Exception $e) {
+        $player = \App\Models\Player::where('name', $name)->first();
+        if (!$player) {
             return ' is not registrated yet! Please register first with command register';
         }
         return $player;
