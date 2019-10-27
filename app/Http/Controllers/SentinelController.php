@@ -133,8 +133,8 @@ class SentinelController extends Controller
             return;
         }
         $return = ' the saved snapshots:' . PHP_EOL;
-        foreach (\App\Models\Snapshot::where('player_id', $player->id)->orderBy('created_at', 'desc')->pluck('created_at', 'id') as $id => $snapshot) {
-            $return .= $id . ' - ' . $snapshot . PHP_EOL;
+        foreach (\App\Models\Snapshot::where('player_id', $player->id)->orderBy('created_at', 'desc')->get() as $snapshot) {
+            $return .= $snapshot->id . ' - ' . $snapshot->created_at . ' - ' . number_format($snapshot->gp, 0, '.', ' ') . ' GP' . PHP_EOL;
         }
         return $return;
     }
@@ -143,16 +143,21 @@ class SentinelController extends Controller
     {
         $player = $this->getPlayerByName($params[2]);
         if (!is_object($player)) {
-            echo 'nope';
+            return;
         }
         $snapshots = [
             \App\Models\Snapshot::findOrFail($params[0]),
             \App\Models\Snapshot::findOrFail($params[1]),
         ];
 
+        if ($snapshots[0]->player_id != $snapshots[1]->player_id) {
+            return 'wrong ids, please recheck parameters!';
+        }
+
         echo 'started compare' . PHP_EOL;
-        $return = 'Player data: '
-            . $snapshots[1]->created_at . ' -> ' . $snapshots[0]->created_at . ' | '
+        $return = 'your progress:' . PHP_EOL;
+        $return .= 'Player data: '
+            . $snapshots[1]->created_at . ' -> ' . $snapshots[0]->created_at . PHP_EOL
             . number_format($snapshots[1]->gp, 0, '.', ' ') . ' GP -> ' . number_format($snapshots[0]->gp, 0, '.', ' ') . ' GP' . PHP_EOL;
 
         $snapshot_unit_power = \App\Models\SnapshotUnit::where('snapshot_id', $params[1])->get()->pluck('power', 'unit_id');
