@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+docker exec -it korriban_sentinel php artisan "$@"
+if [ $? -eq 0 ]; then
+    docker exec -it korriban_sentinel chown -R `id -u`:`id -g` app/ database/
+fi

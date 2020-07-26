@@ -1,0 +1,38 @@
+version: '3.3'
+services:
+
+  korriban_sentinel-db:
+    container_name: korriban_sentinel-db
+    image: mysql:8.0.20
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "${DB_DATABASE}"
+      MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+    volumes:
+      - mysql:/var/lib/mysql
+
+  korriban_sentinel:
+    container_name: korriban_sentinel
+    image: harbor.dock1.diff.hu/korriban_sentinel/korriban_sentinel:0.2.1
+    ports:
+      - 8082:80
+    volumes:
+      - ./src:/var/www
+      - ./.env:/var/www/.env
+      - ./korriban-messenger:/app
+    depends_on:
+      - korriban_sentinel-db
+
+  korriban_sentinel-adminer:
+    container_name: korriban_sentinel-adminer
+    image: adminer:latest
+    ports:
+      - 8080:8080
+    depends_on:
+      - korriban_sentinel-db
+
+volumes:
+  mysql:
+    driver: "local"

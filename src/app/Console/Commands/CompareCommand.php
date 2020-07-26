@@ -7,7 +7,7 @@ use App\Models\SnapshotUnit;
 
 class CompareCommand extends KorribanSentinelCommand
 {
-    protected $signature = 'ks:compare {user_code} {user_name} {snapshot_from_id} {snapshot_to_id}';
+    protected $signature = 'ks:compare {user_code} {user_name} {snapshot_to_id} {snapshot_from_id}';
     protected $description = 'Compares two snapshots';
 
     public function handle()
@@ -26,7 +26,7 @@ class CompareCommand extends KorribanSentinelCommand
 
         $return = $player->mention . ', your progress:' . PHP_EOL;
         $return .= 'Player data: ' . PHP_EOL
-            . $snapshots[1]->created_at . ' -> ' . $snapshots[0]->created_at . PHP_EOL
+            . $snapshots[0]->created_at . ' -> ' . $snapshots[1]->created_at . PHP_EOL
             . number_format($snapshots[1]->gp, 0, '.', ' ') . ' GP -> ' . number_format($snapshots[0]->gp, 0, '.', ' ') . ' GP' . PHP_EOL;
 
         $snapshot_unit_power = SnapshotUnit::query()->where('snapshot_id', $this->argument('snapshot_from_id'))->get()->pluck('power', 'unit_id');
